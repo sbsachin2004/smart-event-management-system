@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Event Management System</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <h1>Smart Event Management System</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <button id="theme-toggle">Toggle Theme</button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Search and Filters -->
+        <section id="filters">
+            <input type="text" id="search-bar" placeholder="Search events...">
+            <select id="category-filter">
+                <option value="">All Categories</option>
+                <option value="Seminar">Seminar</option>
+                <option value="Concert">Concert</option>
+                <option value="Workshop">Workshop</option>
+            </select>
+            <select id="location-filter">
+                <option value="">All Locations</option>
+                <option value="New York">New York</option>
+                <option value="Los Angeles">Los Angeles</option>
+                <option value="Chicago">Chicago</option>
+            </select>
+            <input type="date" id="date-filter" placeholder="Filter by date">
+        </section>
+
+        <!-- Calendar -->
+        <section id="calendar-section">
+            <h2>Event Calendar</h2>
+            <div id="datepicker"></div>
+        </section>
+
+        <!-- Upcoming Events -->
+        <section id="events-list">
+            <h2>Upcoming Events</h2>
+            <div id="events-container"></div>
+            <div id="pagination"></div>
+        </section>
+    </main>
+
+    <!-- Event Details Modal -->
+    <div id="event-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-date"></p>
+            <p id="modal-time"></p>
+            <p id="modal-venue"></p>
+            <p id="modal-description"></p>
+            <p id="modal-organizer"></p>
+            <form id="registration-form">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="email" id="email" placeholder="Your Email" required>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Popup -->
+    <div id="confirmation-popup" class="popup">
+        <p>Registration Successful!</p>
+        <button id="close-popup">OK</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
