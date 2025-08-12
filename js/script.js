@@ -1,5 +1,3 @@
-// script.js
-
 // Mock Events Data
 const events = [
     {
@@ -46,7 +44,6 @@ const events = [
         category: "Seminar",
         location: "New York"
     },
-    // Add more events as needed for pagination demo
     {
         id: 5,
         title: "Jazz Concert",
@@ -75,10 +72,25 @@ const events = [
 const eventsPerPage = 3;
 let currentPage = 1;
 
-// Registered events (from localStorage)
+// Cached LocalStorage data
+let users = JSON.parse(localStorage.getItem('users')) || [];
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
 let registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
 
-// Function to display events
+// Update navigation based on login status
+function updateNav() {
+    if (currentUser) {
+        $('#login-link').hide();
+        $('#logout-link').show();
+        $('#profile-link').show();
+    } else {
+        $('#login-link').show();
+        $('#logout-link').hide();
+        $('#profile-link').hide();
+    }
+}
+
+// Display events
 function displayEvents(filteredEvents, page = 1) {
     const container = $('#events-container');
     container.empty();
@@ -88,14 +100,18 @@ function displayEvents(filteredEvents, page = 1) {
 
     paginatedEvents.forEach(event => {
         const card = $(`
-            <div class="event-card" data-id="${event.id}">
-                <h3>${event.title}</h3>
-                <p>Date: ${event.date}</p>
-                <p>Category: ${event.category}</p>
-                <p>Location: ${event.location}</p>
+            <div class="col-md-4">
+                <div class="card event-card" data-id="${event.id}">
+                    <div class="card-body">
+                        <h5 class="card-title">${event.title}</h5>
+                        <p class="card-text">Date: ${event.date}</p>
+                        <p class="card-text">Category: ${event.category}</p>
+                        <p class="card-text">Location: ${event.location}</p>
+                    </div>
+                </div>
             </div>
         `);
-        container.append(card).hide().fadeIn(500);
+        container.append(card);
     });
 
     setupPagination(filteredEvents.length, page);
@@ -108,8 +124,7 @@ function setupPagination(totalEvents, page) {
     const totalPages = Math.ceil(totalEvents / eventsPerPage);
 
     for (let i = 1; i <= totalPages; i++) {
-        const button = $(`<button>${i}</button>`);
-        if (i === page) button.addClass('active');
+        const button = $(`<button class="btn btn-outline-primary mx-1 ${i === page ? 'active' : ''}">${i}</button>`);
         button.click(() => filterAndDisplay(i));
         pagination.append(button);
     }
@@ -135,19 +150,25 @@ function filterEvents() {
 // Filter and display
 function filterAndDisplay(page = 1) {
     const filtered = filterEvents();
+    currentPage = page;
     displayEvents(filtered, page);
 }
 
 // Open modal
 function openModal(event) {
+    if (!currentUser) {
+        alert('Please login to register for events.');
+        window.location.href = 'login.html';
+        return;
+    }
     $('#modal-title').text(event.title);
     $('#modal-date').text(`Date: ${event.date}`);
     $('#modal-time').text(`Time: ${event.time}`);
     $('#modal-venue').text(`Venue: ${event.venue}`);
     $('#modal-description').text(`Description: ${event.description}`);
     $('#modal-organizer').text(`Organizer: ${event.organizer}`);
-    $('#event-modal').fadeIn();
     $('#registration-form').data('event-id', event.id);
+    $('#event-modal').modal('show');
 }
 
 // Handle registration
@@ -157,11 +178,11 @@ $('#registration-form').submit(function(e) {
     const email = $('#email').val();
     if (name && email && /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(email)) {
         const eventId = $(this).data('event-id');
-        if (!registeredEvents.includes(eventId)) {
-            registeredEvents.push(eventId);
+        if (!registeredEvents.some(re => re.eventId === eventId && re.userId === currentUser.email)) {
+            registeredEvents.push({ eventId, userId: currentUser.email });
             localStorage.setItem('registeredEvents', JSON.stringify(registeredEvents));
-            $('#event-modal').fadeOut();
-            $('#confirmation-popup').fadeIn();
+            $('#event-modal').modal('hide');
+            $('#confirmation-popup').modal('show');
         } else {
             alert('Already registered!');
         }
@@ -170,35 +191,100 @@ $('#registration-form').submit(function(e) {
     }
 });
 
-// Close popup
-$('#close-popup').click(() => $('#confirmation-popup').fadeOut());
+// Handle login
+$('#login-form').submit(function(e) {
+    e.preventDefault();
+    const email = $('#login-email').val();
+    const password = $('#login-password').val();
+    const user = users.find(u => u.email === email && u.password === password);
+    if (user) {
+        currentUser = { name: user.name, email: user.email };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        updateNav();
+        window.location.href = 'index.html';
+    } else {
+        alert('Invalid email or password.');
+    }
+});
 
-// Theme toggle
-$('#theme-toggle').click(() => $('body').toggleClass('dark'));
-
-// Calendar
-function setupCalendar() {
-    const eventDates = events.map(e => e.date);
-    $('#datepicker').datepicker({
-        beforeShowDay: function(date) {
-            const dateStr = $.datepicker.formatDate('yy-mm-dd', date);
-            return [true, eventDates.includes(dateStr) ? 'has-event' : ''];
+// Handle registration
+$('#register-form').submit(function(e) {
+    e.preventDefault();
+    const name = $('#register-name').val();
+    const email = $('#register-email').val();
+    const password = $('#register-password').val();
+    if (name && email && password && /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(email)) {
+        if (users.find(u => u.email === email)) {
+            alert('Email already registered.');
+        } else {
+            users.push({ name, email, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            currentUser = { name, email };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateNav();
+            window.location.href = 'index.html';
         }
-    });
-}
+    } else {
+        alert('Invalid input.');
+    }
+});
 
-// Dashboard display
+// Handle profile update
+$('#profile-form').submit(function(e) {
+    e.preventDefault();
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
+    const name = $('#profile-name').val();
+    const email = $('#profile-email').val();
+    const password = $('#profile-password').val();
+    if (name && email && /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(email)) {
+        const userIndex = users.findIndex(u => u.email === currentUser.email);
+        if (userIndex !== -1 && (!users.some(u => u.email === email && u.email !== currentUser.email))) {
+            users[userIndex] = { name, email, password: password || users[userIndex].password };
+            localStorage.setItem('users', JSON.stringify(users));
+            currentUser = { name, email };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            alert('Profile updated successfully!');
+            window.location.href = 'index.html';
+        } else {
+            alert('Email already in use.');
+        }
+    } else {
+        alert('Invalid input.');
+    }
+});
+
+// Handle logout
+$('#logout-link').click(function(e) {
+    e.preventDefault();
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    updateNav();
+    window.location.href = 'login.html';
+});
+
+// Display registered events
 function displayRegistered() {
+    if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+    }
     const container = $('#registered-container');
     container.empty();
-    registeredEvents.forEach(id => {
-        const event = events.find(e => e.id === id);
+    registeredEvents.filter(re => re.userId === currentUser.email).forEach(re => {
+        const event = events.find(e => e.id === re.eventId);
         if (event) {
             const card = $(`
-                <div class="event-card">
-                    <h3>${event.title}</h3>
-                    <p>Date: ${event.date}</p>
-                    <button class="cancel-btn" data-id="${event.id}">Cancel</button>
+                <div class="col-md-4">
+                    <div class="card event-card">
+                        <div class="card-body">
+                            <h5 class="card-title">${event.title}</h5>
+                            <p class="card-text">Date: ${event.date}</p>
+                            <button class="btn btn-danger cancel-btn" data-id="${event.id}">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             `);
             container.append(card);
@@ -209,19 +295,45 @@ function displayRegistered() {
 // Cancel registration
 $(document).on('click', '.cancel-btn', function() {
     const id = parseInt($(this).data('id'));
-    registeredEvents = registeredEvents.filter(e => e !== id);
+    registeredEvents = registeredEvents.filter(re => !(re.eventId === id && re.userId === currentUser.email));
     localStorage.setItem('registeredEvents', JSON.stringify(registeredEvents));
     displayRegistered();
 });
 
+// Setup calendar with lazy loading
+function setupCalendar() {
+    const eventDates = events.map(e => e.date);
+    $('#datepicker').datepicker({
+        beforeShowDay: function(date) {
+            const dateStr = $.datepicker.formatDate('yy-mm-dd', date);
+            return [true, eventDates.includes(dateStr) ? 'has-event' : ''];
+        }
+    });
+}
+
+// Lazy load calendar when in view
+function lazyLoadCalendar() {
+    const calendarSection = $('#calendar-section')[0];
+    if (calendarSection) {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                setupCalendar();
+                observer.disconnect();
+            }
+        }, { threshold: 0.1 });
+        observer.observe(calendarSection);
+    }
+}
+
 // On load
 $(document).ready(function() {
-    // Show loading screen for 2 seconds
-    setTimeout(() => $('#loading-screen').fadeOut(), 2000);
+    // Update navigation
+    updateNav();
 
+    // Page-specific logic
     if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
         filterAndDisplay();
-        setupCalendar();
+        lazyLoadCalendar();
 
         // Event listeners
         $('#search-bar').keyup(filterAndDisplay);
@@ -235,14 +347,17 @@ $(document).ready(function() {
         });
     } else if (window.location.pathname.includes('dashboard.html')) {
         displayRegistered();
+    } else if (window.location.pathname.includes('profile.html')) {
+        if (currentUser) {
+            $('#profile-name').val(currentUser.name);
+            $('#profile-email').val(currentUser.email);
+        } else {
+            window.location.href = 'login.html';
+        }
+    } else if (window.location.pathname.includes('login.html') && currentUser) {
+        window.location.href = 'index.html';
     }
 
-    // Close modal
-    $('.close').click(() => $('#event-modal').fadeOut());
-    $(window).click(e => {
-        if (e.target === $('#event-modal')[0]) $('#event-modal').fadeOut();
-    });
+    // Theme toggle
+    $('#theme-toggle').click(() => $('body').toggleClass('dark'));
 });
-
-// Custom CSS for calendar highlights
-$('<style>.has-event a { background: #3498db !important; color: white !important; }</style>').appendTo('head');
