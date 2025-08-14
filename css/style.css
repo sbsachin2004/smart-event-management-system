@@ -144,6 +144,95 @@ body {
     background: var(--primary-color);
 }
 
+/* User Section in Navigation */
+.user-section {
+    position: relative;
+}
+
+.user-menu {
+    position: relative;
+}
+
+.login-btn {
+    background: var(--gradient);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow-hover);
+    min-width: 200px;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.user-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-info {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.user-info i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.user-info span {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.user-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.user-dropdown a:hover {
+    background: var(--bg-color);
+    color: var(--primary-color);
+}
+
+.user-dropdown a:last-child {
+    border-radius: 0 0 10px 10px;
+}
+
 .nav-controls {
     display: flex;
     align-items: center;
@@ -805,4 +894,256 @@ body {
 .confirmation p {
     color: #666;
     margin-bottom: 1.5rem;
+}
+
+/* Calendar Section */
+.calendar-section {
+    padding: 4rem 0;
+}
+
+.calendar-container {
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+}
+
+#event-calendar {
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+.ui-datepicker {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 10px !important;
+    padding: 1rem !important;
+    box-shadow: var(--shadow-hover) !important;
+}
+
+.ui-datepicker .ui-datepicker-header {
+    background: var(--gradient) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    margin-bottom: 1rem !important;
+}
+
+.ui-datepicker .ui-datepicker-title {
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 4px !important;
+}
+
+.ui-datepicker .ui-datepicker-prev:hover,
+.ui-datepicker .ui-datepicker-next:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar {
+    width: 100% !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar th {
+    background: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    font-weight: 600 !important;
+    padding: 0.5rem !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar td {
+    padding: 2px !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar a {
+    background: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 6px !important;
+    padding: 0.5rem !important;
+    text-align: center !important;
+    display: block !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar a:hover {
+    background: var(--primary-color) !important;
+    color: white !important;
+    transform: scale(1.1) !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-active {
+    background: var(--gradient) !important;
+    color: white !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar .has-event {
+    background: var(--accent-color) !important;
+    color: white !important;
+    font-weight: bold !important;
+    position: relative !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar .has-event::after {
+    content: '•' !important;
+    position: absolute !important;
+    bottom: 2px !important;
+    right: 4px !important;
+    color: white !important;
+    font-size: 1.2rem !important;
+}
+
+.calendar-events {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    margin-top: 2rem;
+}
+
+.calendar-events h3 {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+
+#selected-date-events {
+    min-height: 100px;
+}
+
+.calendar-event-item {
+    background: var(--bg-color);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.calendar-event-item:hover {
+    transform: translateX(5px);
+    box-shadow: var(--shadow);
+}
+
+.calendar-event-item h4 {
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.calendar-event-item p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.no-events {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 2rem;
+}
+
+/* Authentication Forms */
+.auth-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+    color: var(--text-color);
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.auth-form .form-group input {
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+
+.auth-form .btn-primary {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.auth-switch {
+    text-align: center;
+    color: #666;
+    margin: 0;
+}
+
+.auth-switch a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.auth-switch a:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* Form Validation States */
+.form-group.error input {
+    border-color: #ff4757;
+    box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.1);
+}
+
+.form-group.success input {
+    border-color: #2ed573;
+    box-shadow: 0 0 0 3px rgba(46, 213, 115, 0.1);
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* Success Message */
+.success-message {
+    background: rgba(46, 213, 115, 0.1);
+    color: #2ed573;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(46, 213, 115, 0.2);
+    display: none;
+}
+
+.success-message.show {
+    display: block;
+    animation: fadeInDown 0.3s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

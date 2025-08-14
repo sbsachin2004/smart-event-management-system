@@ -28,8 +28,29 @@
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link active">Home</a></li>
                 <li><a href="#events" class="nav-link">Events</a></li>
-                <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#calendar" class="nav-link">Calendar</a></li>
+                <li class="user-section">
+                    <div class="user-menu" id="user-menu">
+                        <button class="login-btn" id="login-btn">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown" style="display: none;">
+                            <div class="user-info">
+                                <i class="fas fa-user-circle"></i>
+                                <span id="username-display"></span>
+                            </div>
+                            <a href="#dashboard" id="dashboard-link">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="#profile" id="profile-link">
+                                <i class="fas fa-user-edit"></i> Edit Profile
+                            </a>
+                            <a href="#" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </li>
             </ul>
             <div class="nav-controls">
                 <button id="theme-toggle" class="theme-btn" title="Toggle Theme">
@@ -92,6 +113,20 @@
                 <button id="prev-page" class="page-btn" disabled>Previous</button>
                 <span id="page-info">Page 1 of 1</span>
                 <button id="next-page" class="page-btn">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calendar Section -->
+    <section id="calendar" class="calendar-section" style="display: none;">
+        <div class="container">
+            <h2 class="section-title">Event Calendar</h2>
+            <div class="calendar-container">
+                <div id="event-calendar"></div>
+            </div>
+            <div class="calendar-events" id="calendar-events">
+                <h3>Events for Selected Date</h3>
+                <div id="selected-date-events"></div>
             </div>
         </div>
     </section>
@@ -171,11 +206,118 @@
         </div>
     </div>
 
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login</h2>
+                <span class="close" id="login-close">&times;</span>
+            </div>
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                    <span class="error-message"></span>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+                <p class="auth-switch">
+                    Don't have an account? <a href="#" id="show-register">Register here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Register</h2>
+                <span class="close" id="register-close">&times;</span>
+            </div>
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="register-name">Full Name</label>
+                    <input type="text" id="register-name" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="register-phone">Phone</label>
+                    <input type="tel" id="register-phone" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirm Password</label>
+                    <input type="password" id="register-confirm-password" required>
+                    <span class="error-message"></span>
+                </div>
+                <button type="submit" class="btn-primary">Register</button>
+                <p class="auth-switch">
+                    Already have an account? <a href="#" id="show-login">Login here</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <span class="close" id="profile-close">&times;</span>
+            </div>
+            <form id="profile-form" class="auth-form">
+                <div class="form-group">
+                    <label for="profile-name">Full Name</label>
+                    <input type="text" id="profile-name" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="profile-email">Email</label>
+                    <input type="email" id="profile-email" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="profile-phone">Phone</label>
+                    <input type="tel" id="profile-phone" required>
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="profile-current-password">Current Password</label>
+                    <input type="password" id="profile-current-password" placeholder="Leave blank to keep current password">
+                    <span class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="profile-new-password">New Password</label>
+                    <input type="password" id="profile-new-password" placeholder="Leave blank to keep current password">
+                    <span class="error-message"></span>
+                </div>
+                <button type="submit" class="btn-primary">Update Profile</button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/events.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/calendar.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
